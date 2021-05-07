@@ -1,9 +1,14 @@
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 public interface IAutocomplete {
 
-
+    
+    public static final int FREQ_LIMIT = 2000;
+    
   /**
    * <parseFile> Parse the document and return a Map of each
    * n-gram phrase and the times it occurred in the file. (punctuation and special characters
@@ -15,7 +20,7 @@ public interface IAutocomplete {
    * @param n the number of words in the n-gram model
    * @return a Map of list of words in each n-gram phrase and the times it occurred in the file
    */
-   public Map<List<String>, Integer> parseFile(String filename, int n);
+   public Map<ArrayList<String>, Integer> parseFile(String filename, int n);
 
    /**
      * Create a file containing all the words in the files. Each word
@@ -25,7 +30,7 @@ public interface IAutocomplete {
      *
      * @param files the list of the filenames
      */
-   public void createAutoCompleteFile(List<String> files);
+   public void createAutoCompleteFile();
 
 
 
@@ -90,7 +95,7 @@ public interface IAutocomplete {
       *         lexicographic order on the key (tag term).
       *         Each inner map is sorted by descending order on the frequency(its value).
       */
-    public Map<List<String>, Map<String, Integer>> buildNGramIndex(Map<List<String>, Integer> map);
+    public Map<ArrayList<String>, TreeSet<SimpleEntry<String, Integer>>> buildNGramIndex(Map<ArrayList<String>, Integer> map);
 
 
     /**
@@ -102,7 +107,7 @@ public interface IAutocomplete {
      * @param k the maximum number of suggestions that should be displayed
      * @return the root of the N-Gram Trie
      */
-    public WordNode buildNGramTrie(List<Map<List<String>, Map<String, Integer>>> nGramIndex, int k);
+    public WordNode buildNGramTrie(ArrayList<Map<ArrayList<String>, Map<String, Integer>>> nGramIndex, int k);
 
 
     /**
