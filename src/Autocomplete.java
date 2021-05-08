@@ -480,6 +480,51 @@ public class Autocomplete implements IAutocomplete {
         };
     }
 
+    
+    private void addNGramNode(ArrayList<String> remainWords, int weight, WordNode wordNode, ArrayList<String> ngram) {
+        String firstWord = remainWords.get(0);
+        int len = remainWords.size();
+        
+        wordNode.setPrefixes(wordNode.getPrefixes() + 1);
+        ArrayList<WordNode> ref = wordNode.getReferences();
+        if (len > 1) {
+            if (this.findWordRef(wordNode, firstWord) == null) {
+                WordNode newNode = new WordNode(firstWord);
+            }
+        } else if (len == 1) {
+            if (this.findWordRef(wordNode, firstWord) == null) {
+                WordNode newNode = new WordNode(firstWord, weight);
+                newNode.setPhrases(newNode.getPhrases() + 1);
+                newNode.setPrefixes(newNode.getPrefixes() + 1);
+                ref.add(newNode);
+                wordNode.setReferences(ref);
+                
+                return;
+            } else {
+                WordNode wnode = findWordRef(wordNode, firstWord);
+                wnode.setPrefixes(wnode.getPrefixes() + 1);
+                wnode.setPhrases(wnode.getPhrases() + 1);
+                return;
+            }
+            
+        }
+        remainWords.remove(0);
+        this.addNGramNode(remainWords, weight, findWordRef(wordNode, firstWord), ngram);
+    }
+    
+    
+    private WordNode findWordRef(WordNode wordNode, String word) {
+        ArrayList<WordNode> ref = wordNode.getReferences();
+        for (int i = 0; i < ref.size(); i++) {
+            String nthWord = ref.get(i).getNthWord();
+            if (nthWord.equals(word)) {
+                return ref.get(i);
+            }
+        }     
+        return null;
+    }
+    
+    
 
     /**
      * Initializes the N-Gram suggestions Trie

@@ -18,6 +18,7 @@ public class WordNode {
     private Term term;
     private int prefixes;
     private ArrayList<WordNode> references;
+    private String nthWord;
 
     public WordNode(String query, long weight) {
         if (query == null || weight < 0) {
@@ -28,8 +29,17 @@ public class WordNode {
         this.phrases = 0;
         this.prefixes = 0;
         this.references = new ArrayList<WordNode>();
+        this.setNthWord(query);
     }
 
+    public WordNode(String ref) {
+        this.nthWord = ref;
+        this.term = null;
+        this.phrases = 0;
+        this.prefixes = 0;
+        this.references = new ArrayList<WordNode>();
+    }
+    
 
     protected int getPhrases() {
         return phrases;
@@ -64,5 +74,16 @@ public class WordNode {
     }
 
 
+    protected String getNthWord() {
+        return nthWord;
+    }
+
+
+    protected void setNthWord(String nthWord) {
+        this.nthWord = nthWord;
+    }
+
+    
+    
 
 }
