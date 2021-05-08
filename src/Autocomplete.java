@@ -18,7 +18,7 @@ public class Autocomplete implements IAutocomplete {
     // class field variables
     private int numSuggestions;
     private Node root = new Node("", 0);
-    private WordNode nGramRoot = new WordNode("", 0);
+    private WordNode nGramRoot = new WordNode("");
     private Map<String, Integer> wordFreq = new HashMap<>();
 
     /**
@@ -480,16 +480,41 @@ public class Autocomplete implements IAutocomplete {
         };
     }
 
+    public void addNGram(ArrayList<String> ngram, int weight) {
+
+        // check if the word is valid
+        int length = ngram.size();
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < ngram.get(i).length(); j++) {
+            // all characters should be alphabetical characters
+                if (!Character.isLetter(ngram.get(i).charAt(j))) {
+                    // do not add a word if it is invalid
+                    return;
+                }
+            
+            }
+        }
+
+        // add a Node with appropriate weight and word array
+        this.addNGramNode(ngram, weight, this.getnGramRoot(), ngram);
+
+    }
     
     private void addNGramNode(ArrayList<String> remainWords, int weight, WordNode wordNode, ArrayList<String> ngram) {
         String firstWord = remainWords.get(0);
         int len = remainWords.size();
         
         wordNode.setPrefixes(wordNode.getPrefixes() + 1);
+        
         ArrayList<WordNode> ref = wordNode.getReferences();
+        
         if (len > 1) {
             if (this.findWordRef(wordNode, firstWord) == null) {
                 WordNode newNode = new WordNode(firstWord);
+                //WordNode newNode = new WordNode(firstWord, weight);
+                ref.add(newNode);  //added
+                wordNode.setReferences(ref); //added
+                
             }
         } else if (len == 1) {
             if (this.findWordRef(wordNode, firstWord) == null) {
@@ -542,7 +567,7 @@ public class Autocomplete implements IAutocomplete {
         
         
         // TODO Auto-generated method stub
-        return null;
+        return this.nGramRoot;
     }
 
     /**
@@ -586,6 +611,14 @@ public class Autocomplete implements IAutocomplete {
      */
     public void setWordFreq(Map<String, Integer> wordFreq) {
         this.wordFreq = wordFreq;
+    }
+
+    public WordNode getnGramRoot() {
+        return nGramRoot;
+    }
+
+    public void setnGramRoot(WordNode nGramRoot) {
+        this.nGramRoot = nGramRoot;
     }
 
 }

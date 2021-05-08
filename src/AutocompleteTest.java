@@ -362,4 +362,26 @@ public class AutocompleteTest {
         assertEquals(e.getValue(), Integer.valueOf(2162));
     }
     
+    @Test
+    public void testaddNGram() {
+        Autocomplete auto = new Autocomplete();
+        ArrayList<String> ngram = new ArrayList<String>();
+        ngram.add("a");
+        ngram.add("lot");
+        ngram.add("of");
+        auto.addNGram(ngram, 1);
+        WordNode n1 = auto.getnGramRoot().getReferences().get(0);
+        assertEquals(1, n1.getPrefixes());
+        WordNode n2 = n1.getReferences().get(0);
+        assertEquals(1, n2.getPrefixes());
+        WordNode n3 = n2.getReferences().get(0);
+        assertEquals(1, n3.getPrefixes());
+        System.out.println(n1.getTerm());
+        System.out.println(n2.getTerm());
+        System.out.println(n3.getTerm());
+        
+        
+
+    }
+    
 }
