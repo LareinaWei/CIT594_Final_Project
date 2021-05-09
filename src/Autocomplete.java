@@ -585,7 +585,7 @@ public class Autocomplete implements IAutocomplete {
             return null;
         }
         
-        if (preWords.size() == 0 && preWords.get(0).equals("")) {
+        if (preWords.size() == 1 && preWords.get(0).equals("")) {
             return this.nGramRoot;
         }
         
@@ -604,7 +604,7 @@ public class Autocomplete implements IAutocomplete {
         WordNode wn = this.nGramRoot;
         for (int i = 0; i < preWords.size(); i++) {
             
-            if (wn.getReferences().contains(preWords.get(i))) {
+            if (this.findWordRef(wn, preWords.get(i)) != null) {
                 wn = this.findWordRef(wn, preWords.get(i));
             } else {
                 return null;
@@ -638,8 +638,7 @@ public class Autocomplete implements IAutocomplete {
     public List<WordTerm> getNGramSuggestions(String prefix) {
         List<WordTerm> wordTermList = new ArrayList<>();
         WordNode node = this.getnGramRoot();
-        
-        this.traverseNGramSubTrie(this.nGramRoot, wordTermList);
+        this.traverseNGramSubTrie(node, wordTermList);
         return wordTermList;
     }
     
