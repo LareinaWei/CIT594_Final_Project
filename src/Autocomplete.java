@@ -155,7 +155,7 @@ public class Autocomplete implements IAutocomplete {
      * @param weight the weight of the word
      */
     @Override
-    public void addWord(String word, long weight) {
+    public void addWord(String word, int weight) {
 
         // check if the word is valid
         int length = word.length();
@@ -182,7 +182,7 @@ public class Autocomplete implements IAutocomplete {
      * @param node current Node in recursion; traverses over the length of the trie
      * @param word complete word to be added to the Trie at the final step of recursion
      */
-    private void addNode(String str, long weight, Node node, String word) {
+    private void addNode(String str, int weight, Node node, String word) {
         
         // get the first letter in the input String str
         char letter = str.charAt(0);
@@ -273,7 +273,7 @@ public class Autocomplete implements IAutocomplete {
                 }
                 
                 // parse the weight from the String array
-                long w = Long.parseLong(spt[0]);
+                int w = Integer.parseInt(spt[0]);
                 // call the addWord function to add the String in spt[1] to the trie
                 this.addWord(spt[1], w);
             }
@@ -400,7 +400,7 @@ public class Autocomplete implements IAutocomplete {
             // get the query String from the term
             String query = t.getTerm();
             // get the term's weight
-            long weight = t.getWeight();
+            int weight = t.getWeight();
             
             // add a new Term object, with appropriate String and weight, to the list
             list.add(new Term(query, weight));
@@ -680,6 +680,7 @@ public class Autocomplete implements IAutocomplete {
     @Override
     public List<ITerm> completeMe(String prefix) {
         // TODO Auto-generated method stub
+        
         return null;
     }
 

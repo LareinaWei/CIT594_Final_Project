@@ -40,7 +40,7 @@ public interface IAutocomplete {
    * @param word the word to be added to the Trie
    * @param weight the weight of the word
    */
-   public void addWord(String word, long weight);
+   public void addWord(String word, int weight);
 
 
     /**

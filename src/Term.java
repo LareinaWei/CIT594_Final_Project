@@ -2,9 +2,9 @@
 public class Term implements ITerm {
 
     private String query;
-    private long weight;
+    private int weight;
     
-    public Term(String query, long weight) {
+    public Term(String query, int weight) {
         if (query == null || weight < 0) {
             throw new IllegalArgumentException("Not valid input");
         }
@@ -30,11 +30,11 @@ public class Term implements ITerm {
         this.query = query;
     }
 
-    public long getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(long weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
     

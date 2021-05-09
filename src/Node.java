@@ -18,7 +18,7 @@ public class Node {
     private int prefixes;
     private Node[] references;
     
-    public Node(String query, long weight) {
+    public Node(String query, int weight) {
         if (query == null || weight < 0) {
             throw new IllegalArgumentException("Not valid input");
         }
