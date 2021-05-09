@@ -491,8 +491,10 @@ public class Autocomplete implements IAutocomplete {
                     // do not add a word if it is invalid
                     return;
                 }
-            
             }
+            
+            ngram.add(i, ngram.get(i).toLowerCase());
+            
         }
         ArrayList<String> remainingWords = new ArrayList<String>();
         for (int i = 0; i < ngram.size(); i++) {
@@ -679,7 +681,7 @@ public class Autocomplete implements IAutocomplete {
      */
     @Override
     public List<ITerm> completeMe(String prefix) {
-        // TODO Auto-generated method stub
+        
         
         return null;
     }
