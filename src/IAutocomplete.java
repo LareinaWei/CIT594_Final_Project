@@ -117,7 +117,7 @@ public interface IAutocomplete {
      *         prefix. Return an empty list if there are no ITerm object starting
      *         with prefix.
      */
-    public List<WordTerm> getNGramSuggestions(String prefix);
+    public List<WordTerm> getNGramSuggestions(ArrayList<String> prefix);
 
 
     /**

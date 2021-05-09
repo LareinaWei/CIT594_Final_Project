@@ -635,9 +635,9 @@ public class Autocomplete implements IAutocomplete {
      *         with prefix.
      */
     @Override
-    public List<WordTerm> getNGramSuggestions(String prefix) {
+    public List<WordTerm> getNGramSuggestions(ArrayList<String> prefix) {
         List<WordTerm> wordTermList = new ArrayList<>();
-        WordNode node = this.getnGramRoot();
+        WordNode node = this.getNGramSubTrie(prefix);
         this.traverseNGramSubTrie(node, wordTermList);
         return wordTermList;
     }
