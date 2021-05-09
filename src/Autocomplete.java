@@ -573,6 +573,13 @@ public class Autocomplete implements IAutocomplete {
         return this.nGramRoot;
     }
 
+    /**
+     * This method should not throw an exception
+     * @param prefix
+     * @return a List containing all the ITerm objects with query starting with
+     *         prefix. Return an empty list if there are no ITerm object starting
+     *         with prefix.
+     */
     public WordNode getNGramSubTrie(ArrayList<String> preWords) {
         if (preWords == null || preWords.size() == 0) {
             return null;
@@ -632,19 +639,32 @@ public class Autocomplete implements IAutocomplete {
         List<WordTerm> wordTermList = new ArrayList<>();
         WordNode node = this.getnGramRoot();
         
-        
+        this.traverseNGramSubTrie(this.nGramRoot, wordTermList);
         return wordTermList;
     }
     
-    private void traverNGramSubTrie(WordNode wordNode, List<WordTerm> list) {
+    /**
+     * Helper function used to traverse the nGram SubTrie from getNGramSuggestions
+     * Adds WordTerm objects to the list to be returned while traversing the Trie
+     * @param wordNode current WordNode in the recursion process
+     * @param list to add all WordTerm objects to
+     */
+    private void traverseNGramSubTrie(WordNode wordNode, List<WordTerm> list) {
         if (wordNode == null) {
             return;
         }
         
         if (wordNode.getPhrases() > 0) {
-            
+            WordTerm wt = wordNode.getTerm();
+            ArrayList<String> phrase = wt.getPhrase();
+            int weight = wt.getWeight();
+            list.add(new WordTerm(phrase, weight));
         }
         
+        ArrayList<WordNode> ref = wordNode.getReferences();
+        for (int i = 0; i < ref.size(); i++) {
+            this.traverseNGramSubTrie(ref.get(i), list);
+        }
         
     }
     
