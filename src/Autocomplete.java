@@ -493,7 +493,7 @@ public class Autocomplete implements IAutocomplete {
                 }
             }
             
-            ngram.add(i, ngram.get(i).toLowerCase());
+            ngram.set(i, ngram.get(i).toLowerCase());
             
         }
         ArrayList<String> remainingWords = new ArrayList<String>();
@@ -637,8 +637,8 @@ public class Autocomplete implements IAutocomplete {
      *         with prefix.
      */
     @Override
-    public List<WordTerm> getNGramSuggestions(ArrayList<String> prefix) {
-        List<WordTerm> wordTermList = new ArrayList<>();
+    public List<ITerm> getNGramSuggestions(ArrayList<String> prefix) {
+        List<ITerm> wordTermList = new ArrayList<>();
         WordNode node = this.getNGramSubTrie(prefix);
         this.traverseNGramSubTrie(node, wordTermList);
         return wordTermList;
@@ -650,7 +650,7 @@ public class Autocomplete implements IAutocomplete {
      * @param wordNode current WordNode in the recursion process
      * @param list to add all WordTerm objects to
      */
-    private void traverseNGramSubTrie(WordNode wordNode, List<WordTerm> list) {
+    private void traverseNGramSubTrie(WordNode wordNode, List<ITerm> list) {
         if (wordNode == null) {
             return;
         }
@@ -681,9 +681,19 @@ public class Autocomplete implements IAutocomplete {
      */
     @Override
     public List<ITerm> completeMe(String prefix) {
+        List<ITerm> suggestions= new ArrayList<>();
+        String[] preWords = prefix.trim().split("\\s+");
+        ArrayList<String> preWordsList= new ArrayList<String>(Arrays.asList(preWords));
+        List<ITerm> wordSug = this.getSuggestions(prefix);
+        List<ITerm> phraseSug = this.getNGramSuggestions(preWordsList);
+        if (wordSug.size() != 0) {
+            suggestions.addAll(wordSug);
+        }
+        if (phraseSug.size() != 0) {
+            suggestions.addAll(phraseSug);
+        }
         
-        
-        return null;
+        return suggestions;
     }
 
     
