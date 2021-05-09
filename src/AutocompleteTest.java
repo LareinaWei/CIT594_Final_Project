@@ -373,12 +373,14 @@ public class AutocompleteTest {
         WordNode n1 = auto.getnGramRoot().getReferences().get(0);
         assertEquals(1, n1.getPrefixes());
         WordNode n2 = n1.getReferences().get(0);
+        System.out.println(n2.getNthWord());
         assertEquals(1, n2.getPrefixes());
         WordNode n3 = n2.getReferences().get(0);
+        System.out.println(n3.getNthWord());
         assertEquals(1, n3.getPrefixes());
         System.out.println(n1.getTerm());
         System.out.println(n2.getTerm());
-        System.out.println(n3.getTerm());
+        System.out.println(n3.getTerm().toString());
         
         
 

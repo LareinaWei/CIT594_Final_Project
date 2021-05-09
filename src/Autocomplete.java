@@ -494,36 +494,36 @@ public class Autocomplete implements IAutocomplete {
             
             }
         }
-
+        ArrayList<String> remainingWords = new ArrayList<String>();
+        for (int i = 0; i < ngram.size(); i++) {
+            remainingWords.add(ngram.get(i));
+        }
         // add a Node with appropriate weight and word array
-        this.addNGramNode(ngram, weight, this.getnGramRoot(), ngram);
+        this.addNGramNode(remainingWords, weight, this.getnGramRoot(), ngram);
 
     }
     
     private void addNGramNode(ArrayList<String> remainWords, int weight, WordNode wordNode, ArrayList<String> ngram) {
         String firstWord = remainWords.get(0);
         int len = remainWords.size();
-        
         wordNode.setPrefixes(wordNode.getPrefixes() + 1);
-        
         ArrayList<WordNode> ref = wordNode.getReferences();
         
         if (len > 1) {
             if (this.findWordRef(wordNode, firstWord) == null) {
+
                 WordNode newNode = new WordNode(firstWord);
                 //WordNode newNode = new WordNode(firstWord, weight);
                 ref.add(newNode);  //added
-                wordNode.setReferences(ref); //added
-                
+                wordNode.setReferences(ref); //added  
             }
         } else if (len == 1) {
             if (this.findWordRef(wordNode, firstWord) == null) {
-                WordNode newNode = new WordNode(firstWord, weight);
+                WordNode newNode = new WordNode(firstWord, ngram, weight);
                 newNode.setPhrases(newNode.getPhrases() + 1);
                 newNode.setPrefixes(newNode.getPrefixes() + 1);
                 ref.add(newNode);
                 wordNode.setReferences(ref);
-                
                 return;
             } else {
                 WordNode wnode = findWordRef(wordNode, firstWord);
@@ -562,14 +562,53 @@ public class Autocomplete implements IAutocomplete {
      */
     @Override
     public WordNode buildNGramTrie(
-            ArrayList<Map<ArrayList<String>, Map<String, Integer>>> nGramIndex,
+            ArrayList<Map<ArrayList<String>, Integer>> nGramMaps,
             int k) {
-        
-        
-        // TODO Auto-generated method stub
+        for (Map<ArrayList<String>, Integer> nGramMap : nGramMaps) {
+            for (ArrayList<String> phrase: nGramMap.keySet()) {
+                this.addNGram(phrase, nGramMap.get(phrase));
+            }
+        }
+        this.numSuggestions = k;
         return this.nGramRoot;
     }
 
+    public WordNode getNGramSubTrie(ArrayList<String> preWords) {
+        if (preWords == null || preWords.size() == 0) {
+            return null;
+        }
+        
+        if (preWords.size() == 0 && preWords.get(0).equals("")) {
+            return this.nGramRoot;
+        }
+        
+        int length = preWords.size();
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < preWords.get(i).length(); j++) {
+            // all characters should be alphabetical characters
+                if (!Character.isLetter(preWords.get(i).charAt(j))) {
+                    // do not add a word if it is invalid
+                    return null;
+                }
+            
+            }
+        }
+        
+        WordNode wn = this.nGramRoot;
+        for (int i = 0; i < preWords.size(); i++) {
+            
+            if (wn.getReferences().contains(preWords.get(i))) {
+                wn = this.findWordRef(wn, preWords.get(i));
+            } else {
+                return null;
+            }
+        }
+        
+        return wn;
+    }
+    
+    
+    
     /**
      * This method should not throw an exception
      * @param prefix
@@ -579,7 +618,7 @@ public class Autocomplete implements IAutocomplete {
      */
     @Override
     public List<ITerm> getNGramSuggestions(String prefix) {
-        // TODO Auto-generated method stub
+        
         return null;
     }
 

@@ -107,7 +107,7 @@ public interface IAutocomplete {
      * @param k the maximum number of suggestions that should be displayed
      * @return the root of the N-Gram Trie
      */
-    public WordNode buildNGramTrie(ArrayList<Map<ArrayList<String>, Map<String, Integer>>> nGramIndex, int k);
+    public WordNode buildNGramTrie(ArrayList<Map<ArrayList<String>, Integer>> nGramIndex, int k);
 
 
     /**
