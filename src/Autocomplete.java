@@ -538,7 +538,7 @@ public class Autocomplete implements IAutocomplete {
     }
     
     
-    private WordNode findWordRef(WordNode wordNode, String word) {
+    public WordNode findWordRef(WordNode wordNode, String word) {
         ArrayList<WordNode> ref = wordNode.getReferences();
         for (int i = 0; i < ref.size(); i++) {
             String nthWord = ref.get(i).getNthWord();
@@ -608,6 +608,17 @@ public class Autocomplete implements IAutocomplete {
     }
     
     
+    public int countNGramPrefixes(ArrayList<String> prefix) {
+        // get the subTrie Node of the input prefix String
+        WordNode subTrie = getNGramSubTrie(prefix);
+        // if the Node is null, return 0
+        if (subTrie == null) {
+            return 0;
+        }
+        // otherwise, return the number of prefix at that node
+        return subTrie.getPrefixes();
+    }
+    
     
     /**
      * This method should not throw an exception
@@ -617,10 +628,26 @@ public class Autocomplete implements IAutocomplete {
      *         with prefix.
      */
     @Override
-    public List<ITerm> getNGramSuggestions(String prefix) {
+    public List<WordTerm> getNGramSuggestions(String prefix) {
+        List<WordTerm> wordTermList = new ArrayList<>();
+        WordNode node = this.getnGramRoot();
         
-        return null;
+        
+        return wordTermList;
     }
+    
+    private void traverNGramSubTrie(WordNode wordNode, List<WordTerm> list) {
+        if (wordNode == null) {
+            return;
+        }
+        
+        if (wordNode.getPhrases() > 0) {
+            
+        }
+        
+        
+    }
+    
 
     /**
      * This method takes the user input as parameter and call the letter level

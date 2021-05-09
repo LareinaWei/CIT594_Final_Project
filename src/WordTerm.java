@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class WordTerm {
+public class WordTerm implements ITerm {
     
     ArrayList<String> phrase;
     int weight;
@@ -47,7 +47,8 @@ public class WordTerm {
         return p;
     }
     
-    public int compareTo(WordTerm that) {        
+    @Override
+    public int compareTo(ITerm that) {        
         
         return this.phrase.toString().compareTo(((WordTerm)that).getPhrase().toString());
     }
@@ -66,6 +67,7 @@ public class WordTerm {
         };
         return c;
     }
+
 
 
 
