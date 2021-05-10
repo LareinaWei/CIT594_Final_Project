@@ -373,17 +373,246 @@ public class AutocompleteTest {
         WordNode n1 = auto.getnGramRoot().getReferences().get(0);
         assertEquals(1, n1.getPrefixes());
         WordNode n2 = n1.getReferences().get(0);
-        System.out.println(n2.getNthWord());
+        
         assertEquals(1, n2.getPrefixes());
         WordNode n3 = n2.getReferences().get(0);
-        System.out.println(n3.getNthWord());
+        
         assertEquals(1, n3.getPrefixes());
-        System.out.println(n1.getTerm());
-        System.out.println(n2.getTerm());
-        System.out.println(n3.getTerm().toString());
+        
+        assertEquals(n3.getTerm().toString(),"a lot of");
         
         
 
     }
+    
+    
+    @Test
+    public void testbuildNGramTrie() {
+        Map<ArrayList<String>, Integer> m = atc.parseFile("test2.txt", 2);
+        //m.forEach((k, v) -> System.out.println(k + " : " + v));
+        ArrayList<Map<ArrayList<String>, Integer>> nGramMaps = new ArrayList<>();
+        nGramMaps.add(m);
+        WordNode root = atc.buildNGramTrie(nGramMaps, 10);
+        WordNode level1 = atc.findWordRef(root, "with");
+        assertEquals(level1.getTerm(), null);
+        WordNode level2 = atc.findWordRef(level1, "actor");
+        assertEquals(level2.getTerm().toString(), "with actor");
+        WordNode level2_5 = atc.findWordRef(level1, "heroin");
+        assertEquals(level2_5.getTerm().toString(), "with heroin");
+           
+
+    }
+    
+    @Test
+    public void testcountNGramPrefixes() {
+        Map<ArrayList<String>, Integer> m = atc.parseFile("test2.txt", 2);
+       
+        ArrayList<Map<ArrayList<String>, Integer>> nGramMaps = new ArrayList<>();
+        nGramMaps.add(m);
+        atc.buildNGramTrie(nGramMaps, 10);
+        ArrayList<String> list = new ArrayList<>();
+        list.add("with");
+        assertEquals(atc.countNGramPrefixes(list), 2);
+
+        ArrayList<String> list2 = new ArrayList<>();
+        list2.add("were");
+        assertEquals(atc.countNGramPrefixes(list2), 1);
+        
+    }
+    
+    @Test
+    public void testgetNGramSubTrie() {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("with");
+        Map<ArrayList<String>, Integer> m = atc.parseFile("test2.txt", 2);
+        //m.forEach((k, v) -> System.out.println(k + " : " + v));
+        ArrayList<Map<ArrayList<String>, Integer>> nGramMaps = new ArrayList<>();
+        nGramMaps.add(m);
+        atc.buildNGramTrie(nGramMaps, 10);
+        WordNode level1 = atc.getNGramSubTrie(list);
+        WordNode level2 = atc.findWordRef(level1, "actor");
+        assertEquals(level2.getTerm().toString(), "with actor");
+        WordNode level2_5 = atc.findWordRef(level1, "heroin");
+        assertEquals(level2_5.getTerm().toString(), "with heroin");
+        
+    }
+    
+    @Test
+    public void testgetNGramSuggestions() {
+        
+        Map<ArrayList<String>, Integer> m = atc.parseFile("test2.txt", 2);
+        //m.forEach((k, v) -> System.out.println(k + " : " + v));
+        ArrayList<Map<ArrayList<String>, Integer>> nGramMaps = new ArrayList<>();
+        nGramMaps.add(m);
+        atc.buildNGramTrie(nGramMaps, 10);
+        ArrayList<String> input = new ArrayList<String>();
+        input.add("with");
+        List<ITerm> output = atc.getNGramSuggestions(input);
+        assertEquals(output.get(0).toString(),"with heroin");
+        assertEquals(output.get(1).toString(),"with actor");
+        assertEquals(output.size(), 2);
+        
+        ArrayList<String> input2 = new ArrayList<String>();
+        input2.add("white");
+        List<ITerm> output2 = atc.getNGramSuggestions(input2);
+        assertEquals(output2.get(0).toString(),"white spot");
+        assertEquals(output2.size(), 1);
+        
+        
+        
+    }
+    
+    @Test
+    public void testgetNGramSuggestionsAll() {
+        
+        Map<ArrayList<String>, Integer> m2 = atc.parseFile("test_2gram.txt", 2);
+        Map<ArrayList<String>, Integer> m3 = atc.parseFile("test_3gram.txt", 3);
+        Map<ArrayList<String>, Integer> m4 = atc.parseFile("test_4gram.txt", 4);
+        
+        ArrayList<Map<ArrayList<String>, Integer>> nGramMaps = new ArrayList<>();
+        nGramMaps.add(m2);
+        nGramMaps.add(m3);
+        nGramMaps.add(m4);
+        atc.buildNGramTrie(nGramMaps, 10);
+        ArrayList<String> input = new ArrayList<String>();
+        input.add("happy");
+        List<ITerm> output = atc.getNGramSuggestions(input);
+        assertEquals(output.size(), 6);
+        assertEquals(output.get(0).toString(),"happy holiday");
+        assertEquals(output.get(1).toString(),"happy holiday to");
+        assertEquals(output.get(2).toString(),"happy birthday");
+        assertEquals(output.get(3).toString(),"happy birthday to");
+        assertEquals(output.get(4).toString(),"happy birthday to you");
+        assertEquals(output.get(5).toString(),"happy birthday to me");
+        
+        
+        
+    }
+    
+    @Test
+    public void testcompleteMe() {
+        
+        Map<ArrayList<String>, Integer> m2 = atc.parseFile("test_2gram.txt", 2);
+        Map<ArrayList<String>, Integer> m3 = atc.parseFile("test_3gram.txt", 3);
+        Map<ArrayList<String>, Integer> m4 = atc.parseFile("test_4gram.txt", 4);
+        
+        ArrayList<Map<ArrayList<String>, Integer>> nGramMaps = new ArrayList<>();
+        nGramMaps.add(m2);
+        nGramMaps.add(m3);
+        nGramMaps.add(m4);
+        atc.buildNGramTrie(nGramMaps, 10);
+        atc.createAutoCompleteFile();
+        atc.buildTrie("autocomplete.txt", 10);
+        List<ITerm> output = atc.completeMe("happy");
+        
+        assertEquals(output.size(), 8);
+        assertEquals(((Term) output.get(0)).getTerm(),"happy");
+        assertEquals(((Term) output.get(1)).getTerm(),"happyness");
+        assertEquals(output.get(2).toString(),"happy holiday");
+        assertEquals(output.get(3).toString(),"happy holiday to");
+        assertEquals(output.get(4).toString(),"happy birthday");
+        assertEquals(output.get(5).toString(),"happy birthday to");
+        assertEquals(output.get(6).toString(),"happy birthday to you");
+        assertEquals(output.get(7).toString(),"happy birthday to me");
+        
+        
+        
+    }
+    
+    @Test
+    public void testgetRoot() {
+        Autocomplete auto = new Autocomplete();
+         
+        assertEquals("", auto.getRoot().getTerm().getTerm());
+        assertEquals(0, auto.getRoot().getTerm().getWeight());
+        assertEquals(0, auto.getRoot().getPrefixes());
+       
+    }
+
+    @Test
+    public void testAddword() {
+        Autocomplete auto = new Autocomplete();
+        auto.addWord("abc", 1);
+        Node n1 = auto.getRoot().getReferences()[0];
+        assertEquals(1, n1.getPrefixes());
+        Node n2 = n1.getReferences()[1];
+        assertEquals(1, n2.getPrefixes());
+        Node n3 = n2.getReferences()[2];
+        assertEquals(1, n3.getPrefixes());
+
+    }
+
+    @Test
+    public void testBuildTrie() {
+        String filename = "testFile.txt";   
+        atc.buildTrie(filename, 5);
+        assertEquals(atc.numberSuggestions(), 5);
+        assertEquals(atc.countPrefixes(""), 5);
+        assertEquals(atc.countPrefixes("a"), 4);
+        assertEquals(atc.countPrefixes("c"), 1);
+
+    }
+
+    @Test
+    public void testsubTrie() {
+        Autocomplete auto = new Autocomplete();
+        assertEquals(auto.countPrefixes(null), 0);
+
+        auto.addWord("abc", 10);
+        assertNull(auto.getSubTrie("t"));
+        assertNotNull(auto.getSubTrie("a"));
+        assertNotNull(auto.getSubTrie("ab"));
+        assertNotNull(auto.getSubTrie("abc"));
+        
+        
+        Autocomplete auto1 = new Autocomplete();
+        auto1.addWord("abc", 10);
+        assertNull(auto1.getSubTrie("a1"));
+        assertNull(auto1.getSubTrie("ab1"));
+        
+
+    }
+
+    @Test
+    public void testcountPrefix() {
+        Autocomplete auto = new Autocomplete();
+
+        auto.addWord("car", 10);
+        assertEquals(auto.countPrefixes(""), 1);
+        assertEquals(auto.countPrefixes("c"), 1);
+        auto.addWord("car1", 10);
+        assertEquals(auto.countPrefixes(""), 1);
+        assertEquals(auto.countPrefixes("c"), 1);
+        auto.addWord("cat", 10);
+        assertEquals(auto.countPrefixes(""), 2);
+        assertEquals(auto.countPrefixes("c"), 2);
+        assertEquals(auto.countPrefixes("ca"), 2);
+        auto.addWord("camping", 10);
+        assertEquals(auto.countPrefixes(""), 3);
+        assertEquals(auto.countPrefixes("c"), 3);
+        assertEquals(auto.countPrefixes("ca"), 3);
+        assertEquals(auto.countPrefixes("cam"), 1);
+
+    }
+
+    @Test
+    public void testgetSuggestion() {
+        Autocomplete auto = new Autocomplete();
+        auto.addWord("car", 10);
+        auto.addWord("cat", 10);
+        auto.addWord("camping", 10);
+        auto.addWord("cool", 10);
+      
+        assertEquals(auto.getSuggestions("car").size(), 1);
+        assertEquals(auto.getSuggestions("ca").size(), 3);
+        assertEquals(auto.getSuggestions("c").size(), 4);
+        assertEquals(auto.getSuggestions("t").size(), 0);
+        
+        assertEquals("10\tcamping", auto.getSuggestions("c").get(0).toString());
+       
+    }
+
+    
+    
     
 }

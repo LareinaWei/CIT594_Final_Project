@@ -248,6 +248,7 @@ public class Autocomplete implements IAutocomplete {
         // declare a filereader and buffered reader for reading
         FileReader fr = null;
         BufferedReader br = null;
+        this.numSuggestions = k;
         
         try {
             // initialize the filereader and bufferedreader from the input autocomplete file
@@ -712,7 +713,11 @@ public class Autocomplete implements IAutocomplete {
     }
 
     public WordNode getnGramRoot() {
-        return nGramRoot;
+        return this.nGramRoot;
+    }
+    
+    public Node getRoot() {
+        return this.root;
     }
 
     public void setnGramRoot(WordNode nGramRoot) {
