@@ -15,21 +15,30 @@ import java.util.ArrayList;
 public class WordNode {
     //TODO
     private int phrases;
-    private Term term;
+    private WordTerm wordTerm;
     private int prefixes;
     private ArrayList<WordNode> references;
+    private String nthWord;
 
-    public WordNode(String query, long weight) {
+    public WordNode(String ref, ArrayList<String> query, int weight) {
         if (query == null || weight < 0) {
             throw new IllegalArgumentException("Not valid input");
         }
-        Term t = new Term(query, weight);
-        this.term = t;
+        this.nthWord = ref;
+        this.wordTerm = new WordTerm(query, weight);
         this.phrases = 0;
         this.prefixes = 0;
         this.references = new ArrayList<WordNode>();
     }
 
+    public WordNode(String ref) {
+        this.nthWord = ref;
+        this.wordTerm = null;
+        this.phrases = 0;
+        this.prefixes = 0;
+        this.references = new ArrayList<WordNode>();
+    }
+    
 
     protected int getPhrases() {
         return phrases;
@@ -39,12 +48,12 @@ public class WordNode {
         this.phrases = phrases;
     }
 
-    protected Term getTerm() {
-        return term;
+    protected WordTerm getTerm() {
+        return wordTerm;
     }
 
-    protected void setTerm(Term term) {
-        this.term = term;
+    protected void setTerm(WordTerm term) {
+        this.wordTerm = term;
     }
 
     protected int getPrefixes() {
@@ -64,5 +73,16 @@ public class WordNode {
     }
 
 
+    protected String getNthWord() {
+        return nthWord;
+    }
+
+
+    protected void setNthWord(String nthWord) {
+        this.nthWord = nthWord;
+    }
+
+    
+    
 
 }

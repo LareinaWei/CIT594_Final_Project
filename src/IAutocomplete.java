@@ -40,7 +40,7 @@ public interface IAutocomplete {
    * @param word the word to be added to the Trie
    * @param weight the weight of the word
    */
-   public void addWord(String word, long weight);
+   public void addWord(String word, int weight);
 
 
     /**
@@ -107,7 +107,7 @@ public interface IAutocomplete {
      * @param k the maximum number of suggestions that should be displayed
      * @return the root of the N-Gram Trie
      */
-    public WordNode buildNGramTrie(ArrayList<Map<ArrayList<String>, Map<String, Integer>>> nGramIndex, int k);
+    public WordNode buildNGramTrie(ArrayList<Map<ArrayList<String>, Integer>> nGramIndex, int k);
 
 
     /**
@@ -117,7 +117,7 @@ public interface IAutocomplete {
      *         prefix. Return an empty list if there are no ITerm object starting
      *         with prefix.
      */
-    public List<ITerm> getNGramSuggestions(String prefix);
+    public List<ITerm> getNGramSuggestions(ArrayList<String> prefix);
 
 
     /**
